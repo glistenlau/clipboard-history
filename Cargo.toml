@@ -6,9 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-shine_library = {path = "../shine_library"}
+shine_library = { git = "https://github.com/glistenlau/shine_library" }
 anyhow = "1.0.56"
 clipboard = "0.5.0"
 chrono = "0.4.19"
 serde_json = "1.0.79"
 log = "0.4.14"
+clap = { version = "3.1.6", features = ["derive"] }
