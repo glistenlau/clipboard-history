@@ -28,6 +28,8 @@ fn save_to_rocks(key: &str, val: &str) -> Result<()> {
 pub fn start_capturing() {
     let mut ctx: ClipboardContext = ClipboardProvider::new().unwrap();
     let mut current_content = String::new();
+    let mut started = false;
+
     match setup_logger("./log") {
         Ok(_) => info!("setup logger successfully."),
         Err(e) => println!("setup logger failed: {}", e),
@@ -37,10 +39,16 @@ pub fn start_capturing() {
             Ok(content) => {
                 if !content.eq(&current_content) {
                     current_content = content;
+
+                    if !started {
+                        started = true;
+                        continue;
+                    }
+
                     let datetime: DateTime<Utc> = Utc::now();
                     let save_key = get_save_key(&datetime);
                     let save_value = get_save_value(&datetime, &current_content);
-                    println!("[{:?}] {}", datetime.with_timezone(&Local), current_content);
+
                     if let Err(e) = save_to_rocks(&save_key, &save_value) {
                         info!("save to rocks error: {}", e);
                     }

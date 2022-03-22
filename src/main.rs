@@ -23,7 +23,7 @@ use log::info;
 use shine_library::core::log::setup_logger;
 use shine_library::proxy::rocksdb::get_conn;
 use shine_library::proxy::rocksdb::RocksMergeOp;
-use shine_library::proxy::rocksdb::RocksdbProxy;
+
 use utils::get_local_datetime_content;
 
 use crate::constants::CF;
