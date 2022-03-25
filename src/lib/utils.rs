@@ -24,3 +24,11 @@ pub fn get_local_datetime_content(content: &str) -> String {
         &content[29..]
     )
 }
+
+pub fn get_tcp_address() -> String {
+    if cfg!(debug_assertions) {
+        "127.0.0.1:8888".to_string()
+    } else {
+        "127.0.0.1:7878".to_string()
+    }
+}

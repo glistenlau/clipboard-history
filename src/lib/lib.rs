@@ -3,4 +3,4 @@ mod constants;
 mod history_accessor;
 pub mod history_activity;
 mod history_dao;
-mod utils;
+pub mod utils;

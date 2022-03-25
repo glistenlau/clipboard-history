@@ -1,4 +1,5 @@
 use clap::Parser;
+use lib::utils::{get_tcp_address};
 use std::io::prelude::*;
 use std::net::TcpStream;
 
@@ -13,7 +14,7 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    let mut stream = TcpStream::connect("127.0.0.1:7878").unwrap();
+    let mut stream = TcpStream::connect(get_tcp_address()).unwrap();
     stream.write(args.date.as_bytes()).unwrap();
 
     let mut buffer = String::new();
