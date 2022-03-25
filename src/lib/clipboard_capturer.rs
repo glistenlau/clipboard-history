@@ -54,7 +54,7 @@ pub fn start_capturing() {
                     }
                 }
             }
-            Err(err) => println!("error: {:?}", err),
+            Err(err) => {}
         }
         thread::sleep(Duration::from_millis(100))
     }

@@ -1394,7 +1394,7 @@ dependencies = [
 [[package]]
 name = "shine_library"
 version = "0.1.0"
-source = "git+https://github.com/glistenlau/shine_library#5350ad48f8be3684d42003ccdb3ff30337569de9"
+source = "git+https://github.com/glistenlau/shine_library#75cb27914f8113aa34fef8ebc01a93e4f56a9f9a"
 dependencies = [
  "anyhow",
  "chrono",
