@@ -1,17 +1,28 @@
 use lib::clipboard_capturer;
 use lib::history_activity::query_history;
+use lib::utils::get_base_folder;
 use lib::utils::get_tcp_address;
+use shine_library::core::log::setup_logger;
 use std::io::prelude::*;
 use std::net::TcpListener;
 use std::net::TcpStream;
 use std::thread;
 
 fn main() {
+    match setup_logger(&format!("{}/log", get_base_folder())) {
+        Ok(_) => log::info!("setup logger successfully."),
+        Err(e) => println!("setup logger failed: {}", e),
+    }
+
     thread::spawn(|| {
         clipboard_capturer::start_capturing();
     });
 
-    let listener = TcpListener::bind(get_tcp_address()).unwrap();
+    let tcp_address = get_tcp_address();
+
+    log::info!("start tcp server on {}", &tcp_address);
+
+    let listener = TcpListener::bind(tcp_address).unwrap();
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();

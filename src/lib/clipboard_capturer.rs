@@ -30,15 +30,12 @@ pub fn start_capturing() {
     let mut current_content = String::new();
     let mut started = false;
 
-    match setup_logger("./log") {
-        Ok(_) => info!("setup logger successfully."),
-        Err(e) => println!("setup logger failed: {}", e),
-    }
     loop {
         match ctx.get_contents() {
             Ok(content) => {
                 if !content.eq(&current_content) {
                     current_content = content;
+                    log::debug!("Got new clipboard content: {}", &current_content);
 
                     if !started {
                         started = true;
@@ -54,7 +51,10 @@ pub fn start_capturing() {
                     }
                 }
             }
-            Err(err) => {}
+            Err(err) => {
+                started = true;
+                log::debug!("get clipboard content error: {}", err);
+            }
         }
         thread::sleep(Duration::from_millis(100))
     }

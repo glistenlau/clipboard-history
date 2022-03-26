@@ -1,4 +1,6 @@
 /target
 /data
 /log
+/.clipboard_history
 .DS_Store
+nohup.out

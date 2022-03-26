@@ -32,3 +32,7 @@ pub fn get_tcp_address() -> String {
         "127.0.0.1:7878".to_string()
     }
 }
+
+pub fn get_base_folder() -> &'static str {
+    "./.clipboard_history"
+}
