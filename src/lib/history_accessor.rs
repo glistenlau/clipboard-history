@@ -1,6 +1,4 @@
-use std::str::FromStr;
-
-use chrono::{Date, DateTime, Duration, Local, TimeZone, Utc};
+use chrono::{Date, DateTime, Duration, TimeZone};
 
 use crate::history_dao::{self, get_between_datetime};
 

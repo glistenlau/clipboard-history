@@ -1,5 +1,5 @@
 use clap::Parser;
-use lib::utils::{get_tcp_address};
+use lib::utils::get_tcp_address;
 use std::io::prelude::*;
 use std::net::TcpStream;
 
@@ -18,7 +18,7 @@ fn main() {
     stream.write(args.date.as_bytes()).unwrap();
 
     let mut buffer = String::new();
-    let size = stream.read_to_string(&mut buffer).unwrap();
+    let _size = stream.read_to_string(&mut buffer).unwrap();
 
     let history: Vec<String> = serde_json::from_str(&buffer).unwrap();
 

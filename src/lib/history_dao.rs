@@ -1,13 +1,10 @@
-use std::ops::Div;
-
 use anyhow::{anyhow, Result};
 use chrono::DateTime;
 use chrono::Duration;
 use chrono::TimeZone;
-use chrono::Utc;
-use shine_library::core::log::setup_logger;
+
 use shine_library::proxy::rocksdb::get_conn;
-use shine_library::proxy::rocksdb::RocksMergeOp;
+
 use shine_library::proxy::rocksdb::RocksdbProxy;
 
 use crate::constants::CF;
@@ -18,7 +15,7 @@ use crate::utils::get_value_datetime_str;
 
 pub fn get_all() -> Result<Vec<String>> {
     let mut db = get_conn(PATH, MERGE_OP);
-    let mut result = RocksdbProxy::query_range_array_forward::<&str>(CF, None, None, &mut db)?;
+    let result = RocksdbProxy::query_range_array_forward::<&str>(CF, None, None, &mut db)?;
 
     let flatten_result: Vec<String> = flat_multi_results(result);
 
