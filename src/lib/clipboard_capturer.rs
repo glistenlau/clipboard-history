@@ -26,11 +26,11 @@ fn save_to_rocks(key: &str, val: &str) -> Result<()> {
 }
 
 pub fn start_capturing() {
-    let mut ctx: ClipboardContext = ClipboardProvider::new().unwrap();
     let mut current_content = String::new();
     let mut started = false;
 
     loop {
+        let mut ctx: ClipboardContext = ClipboardProvider::new().unwrap();
         match ctx.get_contents() {
             Ok(content) => {
                 if !content.eq(&current_content) {
