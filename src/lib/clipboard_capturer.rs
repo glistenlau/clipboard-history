@@ -1,6 +1,3 @@
-use std::thread;
-use std::time::Duration;
-
 use anyhow::Result;
 use chrono::DateTime;
 
@@ -18,6 +15,39 @@ use crate::constants::MERGE_OP;
 use crate::constants::PATH;
 use crate::utils::get_save_key;
 use crate::utils::get_save_value;
+use clipboard_master::{CallbackResult, ClipboardHandler, Master};
+
+use std::io;
+
+struct Handler;
+
+impl ClipboardHandler for Handler {
+    fn on_clipboard_change(&mut self) -> CallbackResult {
+        let mut ctx: ClipboardContext = ClipboardProvider::new().unwrap();
+        match ctx.get_contents() {
+            Ok(content) => {
+                log::debug!("got new clipboard content: {}", &content);
+                let datetime: DateTime<Utc> = Utc::now();
+                let save_key = get_save_key(&datetime);
+                let save_value = get_save_value(&datetime, &content);
+
+                if let Err(e) = save_to_rocks(&save_key, &save_value) {
+                    info!("save to rocks error: {}", e);
+                }
+            }
+            Err(err) => {
+                log::error!("get clipboard content error: {}", err);
+            }
+        }
+
+        CallbackResult::Next
+    }
+
+    fn on_clipboard_error(&mut self, error: io::Error) -> CallbackResult {
+        log::error!("Clipboard error: {}", error);
+        CallbackResult::Next
+    }
+}
 
 fn save_to_rocks(key: &str, val: &str) -> Result<()> {
     let mut db = get_conn(PATH, MERGE_OP);
@@ -26,36 +56,5 @@ fn save_to_rocks(key: &str, val: &str) -> Result<()> {
 }
 
 pub fn start_capturing() {
-    let mut current_content = String::new();
-    let mut started = false;
-
-    loop {
-        let mut ctx: ClipboardContext = ClipboardProvider::new().unwrap();
-        match ctx.get_contents() {
-            Ok(content) => {
-                if !content.eq(&current_content) {
-                    current_content = content;
-                    log::debug!("Got new clipboard content: {}", &current_content);
-
-                    if !started {
-                        started = true;
-                        continue;
-                    }
-
-                    let datetime: DateTime<Utc> = Utc::now();
-                    let save_key = get_save_key(&datetime);
-                    let save_value = get_save_value(&datetime, &current_content);
-
-                    if let Err(e) = save_to_rocks(&save_key, &save_value) {
-                        info!("save to rocks error: {}", e);
-                    }
-                }
-            }
-            Err(err) => {
-                started = true;
-                log::debug!("get clipboard content error: {}", err);
-            }
-        }
-        thread::sleep(Duration::from_millis(100))
-    }
+    let _ = Master::new(Handler).run();
 }
