@@ -34,6 +34,16 @@ pub fn query_history(input_str: &str) -> Vec<String> {
 
     date_results
         .iter()
-        .map(|content| get_local_datetime_content(content))
+        .map(|content| match get_local_datetime_content(content) {
+            Ok(local_content) => local_content,
+            Err(e) => {
+                log::error!(
+                    "Convert content {} to local datetime content error: {}",
+                    content,
+                    e
+                );
+                content.to_string()
+            }
+        })
         .collect()
 }
