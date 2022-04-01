@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use chrono::{DateTime, Local, TimeZone, Utc};
 
 pub fn get_save_key<Tz: TimeZone>(datetime: &DateTime<Tz>) -> String {
@@ -14,7 +14,12 @@ pub fn get_value_datetime_str<Tz: TimeZone>(datetime: &DateTime<Tz>) -> String {
 }
 
 pub fn get_local_datetime_content(content: &str) -> Result<String> {
-    let datetime_utc_str = &content[1..28];
+    let right = match content.find('Z') {
+        Some(pos) => pos,
+        None => return Err(anyhow!("Invalid content format.")),
+    };
+
+    let datetime_utc_str = &content[1..right + 1];
     let datetime: DateTime<Local> =
         DateTime::parse_from_rfc3339(datetime_utc_str)?.with_timezone(&Local);
 
